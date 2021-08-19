@@ -1,2 +1,2 @@
 # WebCheck
- Simple discord bot to check if a website is up.
+Simple discord bot to check if a website is up.
