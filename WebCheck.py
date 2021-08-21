@@ -24,8 +24,8 @@ def inputfilter(address, count, interval, timeout):
     address=(address.replace("https:",""))
     address=(address.replace("/",""))
 
-    if count > 20:
-        count = 20
+    if count > 10:
+        count = 10
     elif count <=0:
         count = 1
 
@@ -138,7 +138,7 @@ async def help(ctx):
 Required: address (url or ipv4/6)
 Optional: count, interval, and timeout
 Defualt: 2, .25, 1
-Maximum: 20, 2, 5""", inline=False)
+Maximum: 10, 2, 5""", inline=False)
     embed.add_field(name=".check", value="Basic check up/down", inline=False)
     embed.add_field(name=".acheck", value="Average check up/down and average ping time", inline=False)
     embed.add_field(name=".tcheck", value="Time check up/down and displays all pings", inline=False)
