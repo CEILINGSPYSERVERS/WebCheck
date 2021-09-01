@@ -57,15 +57,9 @@ async def check(ctx, address="", count=2, interval=0.25, timeout=1):
         )
         host = ping(address, count, interval, timeout)
 
-        await ctx.channel.send(
-            f"""```
-        {address} is alive: {host.is_alive}```"""
-        )
+        await ctx.channel.send(f"```{address} is alive: {host.is_alive}```")
     except:
-        await ctx.channel.send(
-            f"""```
-ERROR: {address} could not be resolved```"""
-        )
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # average ping time check command
@@ -84,10 +78,7 @@ avgRTT: {host.avg_rtt}ms
 Jitter: {host.jitter}ms```"""
         )
     except:
-        await ctx.channel.send(
-            f"""```
-ERROR: {address} could not be resolved```"""
-        )
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # loss ping time check command
@@ -106,10 +97,7 @@ Loss: {host.packet_loss}%
 Sent: {host.packets_sent}```"""
         )
     except:
-        await ctx.channel.send(
-            f"""```
-ERROR: {address} could not be resolved```"""
-        )
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # times ping time check command
@@ -127,10 +115,7 @@ async def tcheck(ctx, address="", count=2, interval=0.25, timeout=1):
 Packet times: {host.rtts}```"""
         )
     except:
-        await ctx.channel.send(
-            f"""```
-ERROR: {address} could not be resolved```"""
-        )
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # full ping time check command
@@ -155,10 +140,7 @@ Recieved: {host.packets_received}
 Packet times: {host.rtts}```"""
         )
     except:
-        await ctx.channel.send(
-            f"""```
-ERROR: {address} could not be resolved```"""
-        )
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # help command
