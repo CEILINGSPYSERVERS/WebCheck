@@ -15,31 +15,38 @@ import os
 from icmplib import ping, traceroute, Host, Hop
 import variable_lib as vl
 
+os.system("cls")
+
 # set prefix and remove default help command
 client = commands.Bot(command_prefix=".")
 client.remove_command("help")
 
 # user input filter function
-def inputfilter(address, count, interval, timeout):
+def IO(address, count, interval, timeout):
     address = address.replace("https:", "")
     address = address.replace("/", "")
 
-    if count > 10:
-        count = 10
-    elif count <= 0:
-        count = 1
+    try:
+        if count > 10:
+            count = 10
+        elif count <= 0:
+            count = 1
 
-    if interval > 2:
-        interval = 2
-    elif interval < 0.1:
-        interval = 0.1
+        if interval > 2:
+            interval = 2
+        elif interval < 0.1:
+            interval = 0.1
 
-    if timeout > 5:
-        timeout = 5
-    elif timeout <= 0:
-        timeout = 1
+        if timeout > 5:
+            timeout = 5
+        elif timeout <= 0:
+            timeout = 1
+    except:
+        return False, False
 
-    return address, count, interval, timeout
+    host = ping(address, count, interval, timeout)
+
+    return address, host
 
 
 # console output making sure bot launched properly
@@ -51,82 +58,64 @@ async def on_ready():
 # basic check command
 @client.command()
 async def check(ctx, address="", count=2, interval=0.25, timeout=1):
-    try:
-        address, count, interval, timeout = inputfilter(
-            address, count, interval, timeout
-        )
-        host = ping(address, count, interval, timeout)
-
-        await ctx.channel.send(f"```{address} is alive: {host.is_alive}```")
-    except:
+    address, host = IO(address, count, interval, timeout)
+    if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
+    else:
+        await ctx.channel.send(f"```{address} is alive: {host.is_alive}```")
 
 
 # average ping time check command
 @client.command()
 async def acheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    try:
-        host = ping(address, count, interval, timeout)
-        address, count, interval, timeout = inputfilter(
-            address, count, interval, timeout
-        )
-
+    address, host = IO(address, count, interval, timeout)
+    if not host:
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
+    else:
         await ctx.channel.send(
             f"""```
 {address} is alive: {host.is_alive}
 avgRTT: {host.avg_rtt}ms
 Jitter: {host.jitter}ms```"""
         )
-    except:
-        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # loss ping time check command
 @client.command()
 async def lcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    try:
-        address, count, interval, timeout = inputfilter(
-            address, count, interval, timeout
-        )
-        host = ping(address, count, interval, timeout)
-
+    address, host = IO(address, count, interval, timeout)
+    if not host:
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
+    else:
         await ctx.channel.send(
             f"""```
 {address} is alive: {host.is_alive}
 Loss: {host.packet_loss}%
 Sent: {host.packets_sent}```"""
         )
-    except:
-        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # times ping time check command
 @client.command()
 async def tcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    try:
-        address, count, interval, timeout = inputfilter(
-            address, count, interval, timeout
-        )
-        host = ping(address, count, interval, timeout)
-
+    address, host = IO(address, count, interval, timeout)
+    if not host:
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
+    else:
         await ctx.channel.send(
             f"""```
 {address} is alive: {host.is_alive}
 Packet times: {host.rtts}```"""
         )
-    except:
-        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # full ping time check command
 @client.command()
 async def fcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    try:
-        address, count, interval, timeout = inputfilter(
-            address, count, interval, timeout
-        )
-        host = ping(address, count, interval, timeout)
-
+    address, host = IO(address, count, interval, timeout)
+    if not host:
+        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
+    else:
         await ctx.channel.send(
             f"""```
 {address} is alive: {host.is_alive}
@@ -139,8 +128,6 @@ Sent: {host.packets_sent}
 Recieved: {host.packets_received}
 Packet times: {host.rtts}```"""
         )
-    except:
-        await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
 
 
 # help command
