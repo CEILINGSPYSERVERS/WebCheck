@@ -40,7 +40,12 @@ async def query_database(query):
 
     cursor.execute(query)
 
-    return cursor.fetchall()
+    response = cursor.fetchall()
+
+    cursor.close()
+    db.close()
+
+    return response
 
 
 async def alter_database(commit):
@@ -50,6 +55,8 @@ async def alter_database(commit):
 
     cursor.execute(commit)
     db.commit()
+    cursor.close()
+    db.close()
 
     return
 
