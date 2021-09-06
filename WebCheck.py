@@ -62,7 +62,7 @@ async def cleanse_unicode(string):
 
 async def log_command(ctx) -> None:
 
-	if ctx.author.id == client.owner_id: return
+	if ctx.author.id == vl.owner: return
 
 	command = ctx.command.name
 
