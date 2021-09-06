@@ -88,7 +88,7 @@ async def log_command(ctx) -> None:
     channel_name = await cleanse_unicode(ctx.channel.name)
 
     await alter_database(
-        f'INSERT INTO {vl.database} VALUES(DEFAULT, {ctx.guild.id}, "{guild_name}", {ctx.channel.id}, "{channel_name}", {ctx.author.id}, "{user_name}",  "{true_name}", "{command}", "{ctx.message.content}", DEFAULT)'
+        f'INSERT INTO {vl.database} VALUES(DEFAULT, {ctx.guild.id}, "{guild_name}", {ctx.channel.id}, "{channel_name}", {ctx.author.id}, "{user_name}",  "{true_name}", "{ctx.message.content}", DEFAULT)'
     )
 
 
