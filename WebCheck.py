@@ -12,7 +12,8 @@
 import discord
 from discord.ext import commands
 import os
-from icmplib import ping, traceroute, Host, Hop
+import re
+from icmplib import ping, Host, exceptions
 import variable_lib as vl
 
 os.system("cls")
@@ -21,10 +22,12 @@ os.system("cls")
 client = commands.Bot(command_prefix=".")
 client.remove_command("help")
 
-# user input filter function
+# user input filtering and pinging
 def IO(address, count, interval, timeout):
-    address = address.replace("https:", "")
-    address = address.replace("/", "")
+
+    address = re.search("(?<=[^/]//)[^/]+(?=/.+)", address).group(0)
+    if not address:
+        return address, False
 
     try:
         if count > 10:
@@ -42,9 +45,12 @@ def IO(address, count, interval, timeout):
         elif timeout <= 0:
             timeout = 1
     except:
-        return False, False
+        return address, False
 
-    host = ping(address, count, interval, timeout)
+    try:
+        host = ping(address, count, interval, timeout)
+    except exceptions.NameLookupError:
+        host = ping(f"{address}.com", count, interval, timeout)
 
     return address, host
 
@@ -156,7 +162,8 @@ Maximum: 10, 2, 5""",
     embed.add_field(
         name=".tcheck", value="Time check up/down and displays all pings", inline=False
     )
-    embed.add_field(name=".lcheck", value="Loss check up/down and loss", inline=False)
+    embed.add_field(
+        name=".lcheck", value="Loss check up/down and loss", inline=False)
     embed.add_field(
         name=".fcheck",
         value="Full check up/down, average, min, and max ping times",
