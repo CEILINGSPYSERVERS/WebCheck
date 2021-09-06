@@ -96,7 +96,7 @@ async def log_command(ctx) -> None:
 async def IO(address, count, interval, timeout):
     try:
         try:
-            if len(address) > 30:
+            if len(ctx.message.content) > 30:
                 return address, False
             address = re.search("(?<=[^/]//).+", address).group(0)
         except:
