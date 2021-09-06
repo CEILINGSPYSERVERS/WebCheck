@@ -15,6 +15,7 @@ import os
 import re
 from icmplib import ping, Host, exceptions
 import variable_lib as vl
+import	mysql.connector	as mysql
 
 os.system("cls")
 
@@ -22,8 +23,57 @@ os.system("cls")
 client = commands.Bot(command_prefix=".")
 client.remove_command("help")
 
+async def database_connect():
+
+	db = mysql.connect(
+		host		= vl.host,
+		user		= vl.user,
+		passwd		= vl.password,
+		database	= vl.database
+	)
+
+	return db
+
+async def query_database(query):
+
+	db		= await database_connect()
+	cursor	= db.cursor()
+
+	cursor.execute(query)
+
+	return cursor.fetchall()
+
+async def alter_database(commit):
+
+	db		= await database_connect()
+	cursor	= db.cursor()
+
+	cursor.execute(commit)
+	db.commit()
+
+	return
+
+async def cleanse_unicode(string):
+
+    encoded_string = string.encode('ascii', 'ignore')
+    decoded_string = encoded_string.decode()
+
+    return decoded_string
+
+async def log_command(ctx) -> None:
+
+	if ctx.author.id == client.owner_id: return
+
+	command = ctx.command.name
+
+	user_name		= await cleanse_unicode(f'{ctx.author.display_name}#{ctx.author.discriminator}')
+	guild_name		= await cleanse_unicode(ctx.guild.name)
+	channel_name	= await cleanse_unicode(ctx.channel.name)
+
+	await alter_database(f'INSERT INTO {vl.database} VALUES(DEFAULT, {ctx.guild.id}, \"{guild_name}\", {ctx.channel.id}, \"{channel_name}\", {ctx.author.id}, \"{user_name}\", \"{command}\", DEFAULT)')
+
 # user input filtering and pinging
-def IO(address, count, interval, timeout):
+async def IO(address, count, interval, timeout):
     try:
         try:
             address = re.search("(?<=[^/]//).+", address).group(0)
@@ -68,7 +118,9 @@ async def on_ready():
 # basic check command
 @client.command()
 async def check(ctx, address="", count=2, interval=0.25, timeout=1):
-    address, host = IO(address, count, interval, timeout)
+    await log_command(ctx)
+
+    address, host = await IO(address, count, interval, timeout)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -78,7 +130,9 @@ async def check(ctx, address="", count=2, interval=0.25, timeout=1):
 # average ping time check command
 @client.command()
 async def acheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    address, host = IO(address, count, interval, timeout)
+    await log_command(ctx)
+
+    address, host = await IO(address, count, interval, timeout)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -93,7 +147,9 @@ Jitter: {host.jitter}ms```"""
 # loss ping time check command
 @client.command()
 async def lcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    address, host = IO(address, count, interval, timeout)
+    await log_command(ctx)
+
+    address, host = await IO(address, count, interval, timeout)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -108,7 +164,9 @@ Sent: {host.packets_sent}```"""
 # times ping time check command
 @client.command()
 async def tcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    address, host = IO(address, count, interval, timeout)
+    await log_command(ctx)
+
+    address, host = await IO(address, count, interval, timeout)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -122,7 +180,9 @@ Packet times: {host.rtts}```"""
 # full ping time check command
 @client.command()
 async def fcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    address, host = IO(address, count, interval, timeout)
+    await log_command(ctx)
+
+    address, host = await IO(address, count, interval, timeout)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -143,6 +203,8 @@ Packet times: {host.rtts}```"""
 # help command
 @client.command(pass_context=True)
 async def help(ctx):
+    await log_command(ctx)
+
     author = ctx.message.author
 
     embed = discord.Embed(colour=discord.Colour.blue())
