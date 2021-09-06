@@ -93,7 +93,7 @@ async def log_command(ctx) -> None:
 
 
 # user input filtering and pinging
-async def IO(address, count, interval, timeout):
+async def IO(address, count, interval, timeout, ctx):
     try:
         try:
             if len(ctx.message.content) > 30:
@@ -128,6 +128,7 @@ async def IO(address, count, interval, timeout):
     except exceptions.NameLookupError:
         host = ping(f"{address}.com", count, interval, timeout)
 
+    await log_command(ctx)
     return address, host
 
 
@@ -140,9 +141,7 @@ async def on_ready():
 # basic check command
 @client.command()
 async def check(ctx, address="", count=2, interval=0.25, timeout=1):
-    await log_command(ctx)
-
-    address, host = await IO(address, count, interval, timeout)
+    address, host = await IO(address, count, interval, timeout, ctx)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -152,9 +151,7 @@ async def check(ctx, address="", count=2, interval=0.25, timeout=1):
 # average ping time check command
 @client.command()
 async def acheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    await log_command(ctx)
-
-    address, host = await IO(address, count, interval, timeout)
+    address, host = await IO(address, count, interval, timeout, ctx)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -169,9 +166,7 @@ Jitter: {host.jitter}ms```"""
 # loss ping time check command
 @client.command()
 async def lcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    await log_command(ctx)
-
-    address, host = await IO(address, count, interval, timeout)
+    address, host = await IO(address, count, interval, timeout, ctx)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -186,9 +181,7 @@ Sent: {host.packets_sent}```"""
 # times ping time check command
 @client.command()
 async def tcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    await log_command(ctx)
-
-    address, host = await IO(address, count, interval, timeout)
+    address, host = await IO(address, count, interval, timeout, ctx)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -202,9 +195,7 @@ Packet times: {host.rtts}```"""
 # full ping time check command
 @client.command()
 async def fcheck(ctx, address="", count=2, interval=0.25, timeout=1):
-    await log_command(ctx)
-
-    address, host = await IO(address, count, interval, timeout)
+    address, host = await IO(address, count, interval, timeout, ctx)
     if not host:
         await ctx.channel.send(f"```ERROR: {address} could not be resolved```")
     else:
@@ -225,8 +216,6 @@ Packet times: {host.rtts}```"""
 # help command
 @client.command(pass_context=True)
 async def help(ctx):
-    await log_command(ctx)
-
     author = ctx.message.author
 
     embed = discord.Embed(colour=discord.Colour.blue())
