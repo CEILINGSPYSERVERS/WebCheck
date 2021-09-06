@@ -24,9 +24,9 @@ client.remove_command("help")
 
 # user input filtering and pinging
 def IO(address, count, interval, timeout):
-
-    address = re.search("(?<=[^/]//)[^/]+(?=/.+)", address).group(0)
-    if not address:
+    try:
+        address = re.search("(?<=[^/]//)[^/]+(?=/.+)", address).group(0)
+    except:
         return address, False
 
     try:
