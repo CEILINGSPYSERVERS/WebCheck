@@ -15,7 +15,7 @@ import os
 import re
 from icmplib import ping, Host, exceptions
 import variable_lib as vl
-import	mysql.connector	as mysql
+import mysql.connector as mysql
 
 os.system("cls")
 
@@ -23,54 +23,67 @@ os.system("cls")
 client = commands.Bot(command_prefix=".")
 client.remove_command("help")
 
+
 async def database_connect():
 
-	db = mysql.connect(
-		host		= vl.host,
-		user		= vl.user,
-		passwd		= vl.password,
-		database	= vl.database
-	)
+    db = mysql.connect(
+        host=vl.host, user=vl.user, passwd=vl.password, database=vl.database
+    )
 
-	return db
+    return db
+
 
 async def query_database(query):
 
-	db		= await database_connect()
-	cursor	= db.cursor()
+    db = await database_connect()
+    cursor = db.cursor()
 
-	cursor.execute(query)
+    cursor.execute(query)
 
-	return cursor.fetchall()
+    return cursor.fetchall()
+
 
 async def alter_database(commit):
 
-	db		= await database_connect()
-	cursor	= db.cursor()
+    db = await database_connect()
+    cursor = db.cursor()
 
-	cursor.execute(commit)
-	db.commit()
+    cursor.execute(commit)
+    db.commit()
 
-	return
+    return
+
 
 async def cleanse_unicode(string):
 
-    encoded_string = string.encode('ascii', 'ignore')
+    encoded_string = string.encode("ascii", "ignore")
     decoded_string = encoded_string.decode()
 
     return decoded_string
 
+
 async def log_command(ctx) -> None:
 
-	if ctx.author.id == vl.owner: return
+    if ctx.author.id == vl.owner:
+        return
 
-	command = ctx.command.name
+    command = ctx.command.name
 
-	user_name		= await cleanse_unicode(f'{ctx.author.display_name}#{ctx.author.discriminator}')
-	guild_name		= await cleanse_unicode(ctx.guild.name)
-	channel_name	= await cleanse_unicode(ctx.channel.name)
+    user_name = await cleanse_unicode(
+        f"{ctx.author.display_name}#{ctx.author.discriminator}"
+    )
 
-	await alter_database(f'INSERT INTO {vl.database} VALUES(DEFAULT, {ctx.guild.id}, \"{guild_name}\", {ctx.channel.id}, \"{channel_name}\", {ctx.author.id}, \"{user_name}\", \"{command}\", DEFAULT)')
+    true_name = await cleanse_unicode(
+        f"{ctx.author.name}#{ctx.author.discriminator}"
+    )
+
+    guild_name = await cleanse_unicode(ctx.guild.name)
+    channel_name = await cleanse_unicode(ctx.channel.name)
+
+    await alter_database(
+        f'INSERT INTO {vl.database} VALUES(DEFAULT, {ctx.guild.id}, "{guild_name}", {ctx.channel.id}, "{channel_name}", {ctx.author.id}, "{user_name}",  "{true_name}", "{command}", DEFAULT)'
+    )
+
 
 # user input filtering and pinging
 async def IO(address, count, interval, timeout):
@@ -228,8 +241,7 @@ Maximum: 10, 2, 5""",
     embed.add_field(
         name=".tcheck", value="Time check up/down and displays all pings", inline=False
     )
-    embed.add_field(
-        name=".lcheck", value="Loss check up/down and loss", inline=False)
+    embed.add_field(name=".lcheck", value="Loss check up/down and loss", inline=False)
     embed.add_field(
         name=".fcheck",
         value="Full check up/down, average, min, and max ping times",
