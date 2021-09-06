@@ -74,7 +74,7 @@ async def log_command(ctx) -> None:
     if ctx.author.id == vl.owner:
         return
 
-    command = ctx.command.name
+    #command = ctx.command.name
 
     user_name = await cleanse_unicode(
         f"{ctx.author.display_name}#{ctx.author.discriminator}"
@@ -96,6 +96,8 @@ async def log_command(ctx) -> None:
 async def IO(address, count, interval, timeout):
     try:
         try:
+            if len(address) > 30:
+                return address, False
             address = re.search("(?<=[^/]//).+", address).group(0)
         except:
             ...
