@@ -126,7 +126,10 @@ async def IO(address, count, interval, timeout, ctx):
     try:
         host = ping(address, count, interval, timeout)
     except exceptions.NameLookupError:
-        host = ping(f"{address}.com", count, interval, timeout)
+        try:
+            host = ping(f"{address}.com", count, interval, timeout)
+        except:
+            return address, False
 
     await log_command(ctx)
     return address, host
