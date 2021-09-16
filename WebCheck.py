@@ -3,7 +3,7 @@
 #     \ \  /\  / /__| |__ | |    | |__   ___  ___| | __
 #      \ \/  \/ / _ \ '_ \| |    | '_ \ / _ \/ __| |/ /
 #       \  /\  /  __/ |_) | |____| | | |  __/ (__|   <
-#        \/  \/ \___|_.__/ \_____|_| |_|\___|\___|_|\_\ v.1
+#        \/  \/ \___|_.__/ \_____|_| |_|\___|\___|_|\_\ v1.0
 
 
 # WebCheck is a siple discord.py bot that pings a user defined url or ip address to see if it responds.
@@ -74,15 +74,13 @@ async def log_command(ctx) -> None:
     if ctx.author.id == vl.owner:
         return
 
-    #command = ctx.command.name
+    # command = ctx.command.name
 
     user_name = await cleanse_unicode(
         f"{ctx.author.display_name}#{ctx.author.discriminator}"
     )
 
-    true_name = await cleanse_unicode(
-        f"{ctx.author.name}#{ctx.author.discriminator}"
-    )
+    true_name = await cleanse_unicode(f"{ctx.author.name}#{ctx.author.discriminator}")
 
     guild_name = await cleanse_unicode(ctx.guild.name)
     channel_name = await cleanse_unicode(ctx.channel.name)
