@@ -17,7 +17,7 @@ from icmplib import ping, Host, exceptions
 import variable_lib as vl
 import mysql.connector as mysql
 
-os.system("cls")
+os.system ('cls' if os.name == 'nt' else 'clear')
 
 # set prefix and remove default help command
 client = commands.Bot(command_prefix=".")
